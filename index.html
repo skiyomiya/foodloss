@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品ロス記録アプリ</title>
+<style>
+  body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; max-width: 600px; margin: 0 auto; }
+  h2 { color: #333; text-align: center; }
+  .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  label { display: block; margin-top: 10px; font-weight: bold; color: #555; }
+  input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+  .radio-group { margin-top: 5px; }
+  .radio-item { margin-bottom: 5px; font-size: 0.9em; }
+  button { width: 100%; background-color: #4CAF50; color: white; padding: 12px; border: none; border-radius: 4px; margin-top: 20px; font-size: 16px; cursor: pointer; }
+  button:hover { background-color: #45a049; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9em; }
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  th { background-color: #f2f2f2; }
+  .note { font-size: 0.8em; color: #888; margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<h2>🌱 食品ロス記録シート</h2>
+
+<div class="card">
+  <label>日付</label>
+  <input type="date" id="dateInput">
+
+  <label>捨てたもの（食品名）</label>
+  <input type="text" id="foodName" placeholder="例：きゅうり">
+
+  <label>状態</label>
+  <select id="status">
+    <option value="生">生（保存の失敗・買いすぎ）</option>
+    <option value="調理済み">調理済み（作りすぎ・盛り付けすぎ）</option>
+  </select>
+
+  <label>量</label>
+  <input type="text" id="amount" placeholder="例：1本、半分など">
+
+  <label>原因（選択してください）</label>
+  <div class="radio-group">
+    <div class="radio-item">
+      <input type="radio" name="cause" value="A" checked> 
+      <b>原因A：直接廃棄</b> (未開封、期限切れ、傷んでいた)
+    </div>
+    <div class="radio-item">
+      <input type="radio" name="cause" value="B"> 
+      <b>原因B：食べ残し</b> (作りすぎたなど)
+    </div>
+    <div class="radio-item">
+      <input type="radio" name="cause" value="C"> 
+      <b>原因C：過剰除去</b> (皮や茎を切りすぎた)
+    </div>
+  </div>
+
+  <label>損失額（だいたい）</label>
+  <input type="number" id="cost" placeholder="例：50"> <span class="note">円</span>
+
+  <button onclick="addRecord()">記録する</button>
+</div>
+
+<div class="card">
+  <h3>📊 今日の記録</h3>
+  <table id="recordTable">
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>食品</th>
+        <th>原因</th>
+        <th>金額</th>
+      </tr>
+    </thead>
+    <tbody>
+      </tbody>
+  </table>
+</div>
+
+<script>
+  // 今日の日付をセット
+  document.getElementById('dateInput').valueAsDate = new Date();
+
+  function addRecord() {
+    const date = document.getElementById('dateInput').value;
+    const food = document.getElementById('foodName').value;
+    const status = document.getElementById('status').value;
+    const amount = document.getElementById('amount').value;
+    const cost = document.getElementById('cost').value;
+    
+    // ラジオボタンの値を取得
+    let cause = "";
+    const causeElements = document.getElementsByName('cause');
+    for (let i = 0; i < causeElements.length; i++) {
+      if (causeElements[i].checked) {
+        cause = causeElements[i].value;
+        break;
+      }
+    }
+
+    if(food === "") {
+      alert("食品名を入力してください！");
+      return;
+    }
+
+    // 表に行を追加
+    const table = document.getElementById('recordTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+    
+    newRow.innerHTML = `<td>${date}</td><td>${food}</td><td>${cause}</td><td>${cost}円</td>`;
+    
+    alert("記録しました！");
+  }
+</script>
+
+</body>
+</html>
